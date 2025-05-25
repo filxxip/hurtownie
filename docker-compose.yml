@@ -42,6 +42,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./etl:/opt/airflow/etl
       - ./init:/opt/airflow/init
+      - ./post:/opt/airflow/post
       - ./utils:/opt/airflow/utils
       - ./data:/opt/airflow/data
 
@@ -64,6 +65,7 @@ services:
       - ./etl:/opt/airflow/etl
       - ./init:/opt/airflow/init
       - ./utils:/opt/airflow/utils
+      - ./post:/opt/airflow/post
       - ./data:/opt/airflow/data
 
   airflow-scheduler:
@@ -83,6 +85,7 @@ services:
       - ./etl:/opt/airflow/etl
       - ./init:/opt/airflow/init
       - ./utils:/opt/airflow/utils
+      - ./post:/opt/airflow/post
       - ./data:/opt/airflow/data
 
   sqlclient:

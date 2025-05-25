@@ -1,14 +1,10 @@
 import os
 import pandas as pd
 
-def transform_data():
-    base_path = "/opt/airflow/data"
+base_path = "/opt/airflow/data"
 
-    peaks = pd.read_pickle(os.path.join(base_path, "peaks.pkl"))
-    members = pd.read_pickle(os.path.join(base_path, "members.pkl"))
-    exped = pd.read_pickle(os.path.join(base_path, "exped.pkl"))
-
-    # --- PEAKS ---
+def transform_peaks():
+    peaks = pd.read_pickle(os.path.join(base_path, "peaks_raw.pkl"))
     peaks_clean = peaks.rename(columns={
         "PEAKID": "peak_id",
         "PKNAME": "name",
@@ -22,8 +18,10 @@ def transform_data():
         "peak_id", "name", "location", "height_m",
         "region_himal", "region_sub", "is_trekking", "first_ascent_year"
     ]]
+    peaks_clean.to_pickle(os.path.join(base_path, "peaks_clean.pkl"))
 
-    # --- EXPEDITIONS ---
+def transform_exped():
+    exped = pd.read_pickle(os.path.join(base_path, "exped_raw.pkl"))
     exped_clean = exped.rename(columns={
         "EXPID": "expedition_id",
         "PEAKID": "peak_id",
@@ -42,10 +40,11 @@ def transform_data():
         "success1", "success2", "success3", "success4",
         "basecamp_date", "summit_date", "term_date", "highpoint"
     ]]
+    exped_clean.to_pickle(os.path.join(base_path, "exped_clean.pkl"))
 
-    # --- MEMBERS ---
+def transform_members():
+    members = pd.read_pickle(os.path.join(base_path, "members_raw.pkl"))
     members = members.dropna(subset=["EXPID", "MEMBID"])
-
     members_clean = members.rename(columns={
         "EXPID": "expedition_id",
         "MEMBID": "member_id",
@@ -66,8 +65,4 @@ def transform_data():
         "nationality", "role", "is_summited", "is_solo",
         "oxygen_used", "death"
     ]]
-
-    # Save to clean pickles
-    peaks_clean.to_pickle(os.path.join(base_path, "peaks_clean.pkl"))
-    exped_clean.to_pickle(os.path.join(base_path, "exped_clean.pkl"))
     members_clean.to_pickle(os.path.join(base_path, "members_clean.pkl"))
