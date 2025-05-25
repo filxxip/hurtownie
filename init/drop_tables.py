@@ -7,6 +7,7 @@ def drop_tables():
         conn.execute("DROP TABLE IF EXISTS Peak")
         conn.execute("DROP TABLE IF EXISTS Member")
         conn.execute("DROP TABLE IF EXISTS Expedition")
+        conn.execute("DROP TABLE IF EXISTS CountryStatsEconomy")
 
 def drop_datawarehouse_tables():
     engine = get_engine()
@@ -19,5 +20,5 @@ def drop_datawarehouse_tables():
         DROP TABLE IF EXISTS dim_member;
         DROP TABLE IF EXISTS dim_time;
         DROP TABLE IF EXISTS dim_peak;
+        DROP TABLE IF EXISTS dim_country_economy;
         """))
-        print("🧹 Dropped all data warehouse tables.")

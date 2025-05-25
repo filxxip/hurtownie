@@ -66,3 +66,18 @@ def transform_members():
         "oxygen_used", "death"
     ]]
     members_clean.to_pickle(os.path.join(base_path, "members_clean.pkl"))
+
+def transform_country_stats_economy():
+    stats = pd.read_pickle(os.path.join(base_path, "pwt_clean.pkl"))
+    stats_clean = stats.rename(columns={
+        "country_code": "country_code",
+        "contry_name": "country_name",
+        "year": "year",
+        "gdp_per_capita": "gdp_per_capita",
+        "population": "population",
+        "human_capital_index": "human_capital_index"
+    })[
+        ["country_code", "country_name", "year", "gdp_per_capita", "population", "human_capital_index"]
+    ]
+    stats_clean.to_pickle(os.path.join(base_path, "pwt_transformed.pkl"))
+    print("Transformed pwt_clean.pkl → pwt_transformed.pkl")

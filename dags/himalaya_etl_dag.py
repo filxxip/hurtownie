@@ -6,6 +6,9 @@ from etl.transform import transform_peaks, transform_members, transform_exped
 from etl.load import load_peaks, load_members, load_exped
 from init.create_tables import create_required_tables
 from init.drop_tables import drop_tables
+from etl.extract import extract_country_stats_economy
+from etl.transform import transform_country_stats_economy
+from etl.load import load_country_stats_economy
 # from etl.convert import convert_csv_to_pickle
 from post.cleanup import cleanup_pickles
 
@@ -40,7 +43,15 @@ with DAG("himalaya_etl_dag", start_date=datetime(2024, 1, 1), schedule_interval=
     transform_exped_task = PythonOperator(task_id="transform_exped", python_callable=transform_exped)
     load_exped_task = PythonOperator(task_id="load_exped", python_callable=load_exped)
 
+    # === COUNTRY STATS ECONOMY PATH ===
+    extract_country_stats_task = PythonOperator(task_id="extract_country_stats", python_callable=extract_country_stats_economy)
+    transform_country_stats_task = PythonOperator(task_id="transform_country_stats", python_callable=transform_country_stats_economy)
+    load_country_stats_task = PythonOperator(task_id="load_country_stats", python_callable=load_country_stats_economy)
+
+
     # DAG Dependencies
     drop_tables_task >> create_tables >>  extract_peaks_task >> transform_peaks_task >> load_peaks_task >> cleanup_task
     drop_tables_task >> create_tables >>  extract_members_task >> transform_members_task >> load_members_task >> cleanup_task
     drop_tables_task >> create_tables >>  extract_exped_task >> transform_exped_task >> load_exped_task >> cleanup_task
+    drop_tables_task >> create_tables >> extract_country_stats_task >> transform_country_stats_task >> load_country_stats_task >> cleanup_task
+

@@ -55,6 +55,17 @@ def create_required_tables():
             )
         """))
 
+        conn.execute(text("""
+        CREATE TABLE CountryStatsEconomy (
+            country_code VARCHAR(3),
+            country_name VARCHAR(100),
+            year INT,
+            gdp_per_capita FLOAT,
+            population INT,
+            human_capital_index FLOAT
+        )
+        """))
+
 
 def create_datawarehouse_tables():
     engine = get_engine()
@@ -111,6 +122,7 @@ def create_datawarehouse_tables():
         CREATE TABLE dim_expedition (
             expedition_id VARCHAR(20) PRIMARY KEY,
             peak_id VARCHAR(10),
+            year INT,
             season INT,
             success1 BIT,
             success2 BIT,
@@ -131,6 +143,19 @@ def create_datawarehouse_tables():
             is_solo BIT,
             oxygen_used BIT,
             death BIT
+        )
+        """))
+
+        # === DIM COUNTRY ECONOMY ===
+        conn.execute(text("""
+        CREATE TABLE dim_country_economy (
+            country_eco_id INT IDENTITY(1,1) PRIMARY KEY,
+            country_code VARCHAR(3),
+            country_name VARCHAR(100),
+            year INT,
+            gdp_per_capita FLOAT,
+            population INT,
+            human_capital_index FLOAT
         )
         """))
 
