@@ -16,6 +16,7 @@ from etl.dw_loader import (
 from post.clean_nationality import cleanup_dim_member_nationalities
 from post.clean_roles import clean_roles
 from post.cleanup import cleanup_tmp_tables
+from post.cleanup_dim_member import cleanup_dim_member_nulls
 
 with DAG("dw_etl_dag", start_date=datetime(2024, 1, 1), schedule_interval=None, catchup=False) as dag:
     # Drop and recreate warehouse tables
@@ -67,19 +68,24 @@ with DAG("dw_etl_dag", start_date=datetime(2024, 1, 1), schedule_interval=None, 
         python_callable=cleanup_tmp_tables
     )
 
+    cleanup_dim_member = PythonOperator(
+        task_id="cleanup_dim_member_nulls",
+        python_callable=cleanup_dim_member_nulls
+    )
+
     # Dependencies
     drop_tables >> create_tables
 
     create_tables >> [load_time, load_peaks, load_details, load_country_economy]
     create_tables >> load_roles >> clean_roles_task
-    create_tables >> load_members >> cleanup_nationalities_task
+    create_tables >> load_members >> cleanup_nationalities_task >> cleanup_dim_member
 
     [load_peaks, load_time] >> load_expedition
 
     [
-        load_roles,
+        clean_roles_task,
         load_time,
-        cleanup_nationalities_task,
+        cleanup_dim_member,
         load_peaks,
         load_expedition,
         load_details,
