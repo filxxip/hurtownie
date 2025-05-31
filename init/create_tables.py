@@ -179,8 +179,10 @@ def create_datawarehouse_tables():
             FOREIGN KEY (summit_time_id) REFERENCES dim_time(time_id),
             FOREIGN KEY (term_time_id) REFERENCES dim_time(time_id),
             FOREIGN KEY (role_id) REFERENCES dim_role(role_id),
-            FOREIGN KEY (member_ex_details_id) REFERENCES dim_member_expedition_details(member_ex_details_id)
+            FOREIGN KEY (member_ex_details_id) REFERENCES dim_member_expedition_details(member_ex_details_id),
+            FOREIGN KEY (country_eco_id) REFERENCES dim_country_economy(country_eco_id) -- 🔥 dodane
         )
+
         """))
 
         print("Data warehouse tables created.")
