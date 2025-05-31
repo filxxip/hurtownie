@@ -62,7 +62,8 @@ def create_required_tables():
             year INT,
             gdp_per_capita FLOAT,
             population INT,
-            human_capital_index FLOAT
+            human_capital_index FLOAT,
+            hci_bucket VARCHAR(20)
         )
         """))
 
