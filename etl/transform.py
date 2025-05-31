@@ -69,6 +69,7 @@ def transform_members():
 
 def transform_country_stats_economy():
     stats = pd.read_pickle(os.path.join(base_path, "pwt_clean.pkl"))
+
     stats_clean = stats.rename(columns={
         "country_code": "country_code",
         "contry_name": "country_name",
@@ -79,5 +80,25 @@ def transform_country_stats_economy():
     })[
         ["country_code", "country_name", "year", "gdp_per_capita", "population", "human_capital_index"]
     ]
-    stats_clean.to_pickle(os.path.join(base_path, "pwt_transformed.pkl"))
-    print("Transformed pwt_clean.pkl → pwt_transformed.pkl")
+
+    def assign_hci_bucket(df_year):
+        df_year = df_year.sort_values("human_capital_index", ascending=False).reset_index(drop=True)
+        n = len(df_year)
+        top = int(n * 0.3)
+        mid = int(n * 0.6)
+
+        bucket = []
+        for i in range(n):
+            if i < top:
+                bucket.append("wysokie")
+            elif i < mid:
+                bucket.append("średnie")
+            else:
+                bucket.append("niskie")
+        df_year["hci_bucket"] = bucket
+        return df_year
+
+    stats_with_buckets = stats_clean.groupby("year", group_keys=False).apply(assign_hci_bucket)
+
+    stats_with_buckets.to_pickle(os.path.join(base_path, "pwt_transformed.pkl"))
+    print("Transformed pwt_clean.pkl → pwt_transformed.pkl with HCI buckets")
